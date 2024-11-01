@@ -4,6 +4,7 @@ require_once __DIR__ . '/Model.php';
 class Category extends Model
 {
     protected $table = 'categories';
+
     public function create($datas)
     {
         return parent::create_data($datas, $this->table);
@@ -26,14 +27,18 @@ class Category extends Model
         return parent::delete_data($id, $this->table);
     }
 
-    public function search($keyword)
+    public function search($keyword, $start = null, $limit = null)
     {
-        $keyword = "WHERE name LIKE '%{$keyword}%' ";
-        return parent::search_data($keyword, $this->table);
+        $queryLimit = "";
+        if (isset($start) && isset($limit)) {
+            $queryLimit = " LIMIT $start, $limit";
+        }
+        $keywordnew = "WHERE name LIKE '%{$keyword}%' $queryLimit";
+        return parent::search_data($keywordnew, $this->table);
     }
 
-    public function peginate($limit, $start,)
+    public function paginate($start, $limit)
     {
-        return parent::peginare_data($limit, $start, $this->table);
+        return parent::paginate_data($start, $limit, $this->table);
     }
 }

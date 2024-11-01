@@ -6,11 +6,16 @@ require_once __DIR__ . '/../Model/Category.php';
 
 $categories = new Category();
 
+$limit = 2;
+$page = (isset($_GET['page']) ? $_GET["page"] : 1);
+$start = ($page * $limit) - $limit;
+$totalData = count($categories->all());
+$totalPages = ceil($totalData / $limit);
+
+$categories = $categories->paginate($start, $limit);
+
 
 ?>
-
-
-
 
 
 <!DOCTYPE html>
@@ -20,7 +25,7 @@ $categories = new Category();
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
     <title>Blank Page &mdash; Stisla</title>
-    <script src="../js/jquery.js"></script>
+
     <!-- General CSS Files -->
     <link rel="stylesheet" href="../assets/modules/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/modules/fontawesome/css/all.min.css">
@@ -66,7 +71,7 @@ $categories = new Category();
                                     <div class="card-header">
                                         <h4>Advanced Table</h4>
                                         <div class="card-header-form">
-                                            <form>
+                                            <form action="" method="get">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="search" placeholder="Search">
                                                     <div class="input-group-btn">
@@ -89,7 +94,7 @@ $categories = new Category();
                                                     <th>Nama Categori</th>
                                                     <th>Action</th>
                                                 </tr>
-                                                <?php foreach ($categories->paginate(0, 3) as $category) : ?>
+                                                <?php foreach ($categories as $category) : ?>
                                                     <tr>
                                                         <td class="">
                                                             <div class="custom-checkbox custom-control">
@@ -97,7 +102,9 @@ $categories = new Category();
                                                                 <label for="checkbox-1" class="custom-control-label">&nbsp;</label>
                                                             </div>
                                                         </td>
-                                                        <td><?= $category["name"] ?></td>
+                                                        <td>
+                                                            <?= $category['name'] ?>
+                                                        </td>
                                                         <td class="justify-content-end">
                                                             <a href="detail-category.php?id=<?= $category["id"] ?>" class="btn btn-primary mr-1"><i class="far fa-eye"></i> Detail</a>
                                                             <a href="edit-category.php?id=<?= $category["id"] ?>" class="btn btn-success mr-1"> <i class="far fa-edit"></i> Edit</a>
@@ -106,7 +113,33 @@ $categories = new Category();
                                                     </tr>
                                                 <?php endforeach ?>
                                             </table>
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <ul class="pagination">
+
+                                                    <?php if ($page > 1): ?>
+                                                        <a class="page-link" href="?page=<?= $page - 1 ?>" tabindex="-1">Previous</a>
+                                                    <?php else: ?>
+                                                        <a class="page-link" href="" tabindex="-1">Previous</a>
+                                                    <?php endif; ?>
+
+                                                    <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
+                                                        <?php if ($i == $page): ?>
+                                                            <button class="btn btn-primary"><a class="text-light" href="?page=<?= $i ?>"><?= $i ?></a></button>
+                                                        <?php else: ?>
+                                                            <button class="btn"><a class="text-primary" href="?page=<?= $i ?>"><?= $i ?></a></button>
+                                                        <?php endif; ?>
+                                                    <?php endfor; ?>
+
+                                                    <?php if ($page < $totalPages): ?>
+                                                        <a class="page-link" href="?page=<?= $page + 1 ?>">Next</a>
+                                                    <?php else: ?>
+                                                        <a class="page-link" href="">Next</a>
+                                                    <?php endif; ?>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -118,8 +151,6 @@ $categories = new Category();
         </div>
     </div>
 
-
-    <script src="../js/script.js"></script>
     <!-- General JS Scripts -->
     <script src="../assets/modules/jquery.min.js"></script>
     <script src="../assets/modules/popper.js"></script>
@@ -136,6 +167,15 @@ $categories = new Category();
     <!-- Template JS File -->
     <script src="../assets/js/scripts.js"></script>
     <script src="../assets/js/custom.js"></script>
+
+
+    <script>
+        $(document).ready(function() {
+            $("#search").on("keyup", function() {
+                $("#content").load("../search/category.php?keyword=" + $("#search").val());
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -1,3 +1,39 @@
+<?php
+
+require_once __DIR__ . '/../Model/Model.php';
+require_once __DIR__ . '/../Model/Category.php';
+
+
+if (isset($_POST["submit"])) {
+    // var_dump($_POST);
+
+    $category = [
+        "name" => $_POST["name"]
+    ];
+    if (strlen($_POST["name"]) > 225) {
+        echo "<script>
+        alert('Kategori harus dibawah 225 Karakter!!')
+        </script>";
+        die;
+    }
+    $categories = new Category;
+    $result = $categories->create($category);
+    if ($result !== false) {
+        echo "<script>
+        alert('Kategori ditambahkan dengan nama {$result['name']}') window.location.href = 'create-category.php';
+        </script>";
+    }else{
+        echo "<script>
+        alert('Kategori gagal ditambahkan') window.location.href = 'create-category.php';
+        </script>";
+    }
+    // var_dump($result);
+}
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -65,15 +101,15 @@
                                 <div class="card-header">
                                     <h4>Input Text</h4>
                                 </div>
-                                <div class="card-body">
+                                <form action="" clas="card-body" method="post">
                                     <div class="form-group">
-                                        <label>Nama Kategori</label>
-                                        <input type="text" class="form-control">
+                                        <label for="name">Nama Kategori</label>
+                                        <input type="text" name="name" id="name" class="form-control">
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <button class="btn btn-primary">Tambahkan</button>
+                                        <button class="btn btn-primary" type="submit" name="submit">Tambahkan</button>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>

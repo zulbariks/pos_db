@@ -30,12 +30,14 @@ abstract class Model extends Conection implements ModelInterface
     {
         $query = "SELECT * FROM $table";
         $result = mysqli_query($this->db, $query);
-        return $result;
+
+        return $this->convert_data($result);
     }
 
     public function convert_data($datas)
     //  ini datas itu paramater doank. bebas mau dinamain apa
     {
+        $data = [];
         while ($row = mysqli_fetch_assoc($datas)) {
             $data[] = $row;
         }
@@ -74,14 +76,14 @@ abstract class Model extends Conection implements ModelInterface
 
     public function search_data($keyword, $table)
     {
-        $query = "SELECT * FROM $table $$keyword ";
+        $query = "SELECT * FROM $table $keyword";
         $result = mysqli_query($this->db, $query);
         return $this->convert_data($result);
     }
 
-    public function peginate_data($limit, $start, $table)
+    public function paginate_data($start, $limit, $table)
     {
-        $query = "SELECT * FROM $table LIMIT $limit, $start";
+        $query = "SELECT * FROM $table LIMIT $start, $limit";
         $result = mysqli_query($this->db, $query);
         return  $this->convert_data($result);
     }

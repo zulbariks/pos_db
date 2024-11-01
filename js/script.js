@@ -16,7 +16,7 @@
 //   xhr.send();
 // });
 $(document).ready(function () {
-  $("#keyword").on("keyup", function () {
-    $("#content").load("search/Category.php?cari=" + $("#keyword").val());
+  $("#search").on("keyup", function () {
+    $("#content").load("/../search/Category.php?cari=" + $("#search").val());
   });
 });
